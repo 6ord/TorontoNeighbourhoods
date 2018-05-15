@@ -1,0 +1,16 @@
+create table temp_labouractivity(
+neighbourhood string, population string, didNotWork string, worked string, workedFT string, workedPT string)
+row format delimited fields terminated by ','
+tblproperties('skip.header.line.count'='1');
+
+load data inpath '/user/publication/labour/LabourActivity.csv'
+overwrite into table temp_labouractivity;
+
+create table labouractivity as
+select neighbourhood string,
+cast(regexp_replace(population,'"','') as int) as population,
+cast(regexp_replace(didNotWork,'"','') as int) as didNotWork,
+cast(regexp_replace(worked,'"','') as int) as worked,
+cast(regexp_replace(workedFT,'"','') as int) as workedFT,
+cast(regexp_replace(workedPT,'"','') as int) as workedPT,
+from temp_labouractivity;
